@@ -1,36 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SolarTech Monitor - Sistema di Gestione Impianti Fotovoltaici
 
-## Getting Started
+Progetto realizzato per l'esame di stato/modulo di sviluppo web. 
+L'applicazione permette il monitoraggio della produzione energetica di diversi parchi solari, integrando dati meteorologici in tempo reale per la manutenzione predittiva.
 
-First, run the development server:
+## 🚀 Funzionalità Principali
+- **Dashboard Dinamica**: Visualizzazione delle prestazioni di tutti gli impianti.
+- **Integrazione API Meteo**: Recupero automatico dei dati di irraggiamento solare tramite *Open-Meteo API*.
+- **Analisi Efficienza**: Calcolo automatico del rendimento percentuale in base alla capacità massima dell'impianto.
+- **Sistema Alert**: Notifica visiva di "Alert Efficienza" quando l'irraggiamento è alto ma la produzione è sotto la soglia ottimale.
+- **Gestione CRUD**: Inserimento manuale delle letture giornaliere tramite form integrato.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🛠️ Tecnologie Utilizzate
+- **Frontend**: Next.js 14 (App Router), React, Tailwind CSS.
+- **Backend**: Next.js API Routes (Serverless).
+- **Database**: MySQL (gestito tramite `mysql2/promise`).
+- **Linguaggio**: TypeScript.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 📂 Struttura del Progetto (No SRC)
+Il progetto segue una struttura moderna "flat" per Next.js:
+- `/app`: Contiene le pagine, le API route e i componenti principali.
+- `/app/api/produzione`: Endpoint per le operazioni sul database.
+- `db.ts`: Configurazione del pool di connessioni MySQL.
+- `.env.local`: Variabili d'ambiente per la sicurezza delle credenziali.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## ⚙️ Configurazione Database
+Per far girare il progetto, è necessario importare le seguenti tabelle nel database MySQL:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```sql
+CREATE DATABASE esame_fabio_caragliu;
+USE esame_fabio_caragliu;
 
-## Learn More
+CREATE TABLE impianti (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome_parco VARCHAR(100),
+    latitudine DECIMAL(10, 8),
+    longitudine DECIMAL(11, 8),
+    capacita_max_kw INT
+);
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+CREATE TABLE produzione (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_impianto INT,
+    data DATE,
+    kwh_prodotti DECIMAL(10, 2),
+    ore_funzionamento DECIMAL(5, 2),
+    FOREIGN KEY (id_impianto) REFERENCES impianti(id)
+);
