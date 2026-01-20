@@ -11,22 +11,31 @@ Tecnologie: Next.js, TypeScript, MySQL, Tailwind CSSRepository: GitHub (Private/
 
 1.2 Obiettivi Centralizzazione: gestire impianti da un'unica dashboard. Analisi Predittiva: Identificare cali di efficienza tramite confronto con dati di irraggiamento. Persistenza: Storicizzare le letture giornaliere in un database relazionale.
 
-2. Architettura del Sistema: L'applicazione segue il paradigma Client-Server moderno offerto da Next.js Frontend (Client): Sviluppato con React e componenti lato client ("use client"). Gestisce l'interazione con l'utente e la visualizzazione dei dati tramite Tailwind CSS.Backend (Server): Implementato tramite Next.js API Routes. Gestisce la logica di business e la comunicazione sicura con il database MySQL. Database: MySQL relazionale per garantire l'integrit� dei dati tramite chiavi esterne (Foreign Keys).
+2. Architettura del Sistema: L'applicazione segue il paradigma Client-Server moderno offerto da Next.js Frontend (Client): Sviluppato con React e componenti lato client ("use client"). Gestisce l'interazione con l'utente e la visualizzazione dei dati tramite Tailwind CSS.Backend (Server): Implementato tramite Next.js API Routes. Gestisce la logica di business e la comunicazione sicura con il database MySQL. Database: MySQL relazionale per garantire l'integrità dei dati tramite chiavi esterne (Foreign Keys).
+"Per quanto riguarda l'organizzazione delle directory, si è scelto di adottare una struttura 'Root-Level App Directory', posizionando la cartella /app direttamente nella radice del progetto anziché all'interno di una cartella /src.
+
+Questa decisione è stata presa per i seguenti motivi tecnici:
+
+Conformità agli standard Next.js (App Router): Con l'introduzione della versione 13+, Next.js ha ottimizzato il riconoscimento automatico delle rotte e dei componenti posizionati nella root, rendendo la cartella src un layer opzionale e non più necessario per la separazione dei contenuti.
+
+Riduzione della complessità (Flat Structure): Una struttura più piatta facilita la gestione dei percorsi (imports) e riduce l'annidamento eccessivo delle cartelle, migliorando la leggibilità del codice per il team di sviluppo.
+
+Separazione chiara delle responsabilità: I file di configurazione (come tailwind.config.ts, next.config.js e .env) rimangono chiaramente distinti dalla logica applicativa contenuta in /app, garantendo comunque un ordine logico rigoroso."
 
 3. Progettazione della Base Dati: Il database esame_fabio_caragliu  composto da due tabelle principali relazionate tra loro.
 
-3.1 Schema ER (Entit�-Relazione) Impianti (1): Contiene l'anagrafica. (id, nome_parco, latitudine, longitudine, capacita_max_kw). Produzione (N): Contiene le letture giornaliere. (id, id_impianto, data, kwh_prodotti, ore_funzionamento).
+3.1 Schema ER (Entità -Relazione) Impianti (1): Contiene l'anagrafica. (id, nome_parco, latitudine, longitudine, capacita_max_kw). Produzione (N): Contiene le letture giornaliere. (id, id_impianto, data, kwh_prodotti, ore_funzionamento).
 
-3.2 Calcolo dell'Efficienza (Logica SQL):L'efficienza viene calcolata dinamicamente tramite una query che mette in rapporto la produzione oraria con la capacit� nominale: Efficienza = \frac{(\text{kWh prodotti} / \text{ore funzionamento})}{\text{Capacit� Max (kW)}} \times 100. Integrazione API Esterne Il sistema interroga l'API di Open-Meteo utilizzando le coordinate geografiche salvate nel database. 
+3.2 Calcolo dell'Efficienza (Logica SQL):L'efficienza viene calcolata dinamicamente tramite una query che mette in rapporto la produzione oraria con la capacità nominale: Efficienza = \frac{(\text{kWh prodotti} / \text{ore funzionamento})}{\text{Capacità Max (kW)}} \times 100. Integrazione API Esterne Il sistema interroga l'API di Open-Meteo utilizzando le coordinate geografiche salvate nel database. 
 
 Endpoint: https://api.open-meteo.com/v1/forecastParametro 
 
-Chiave: shortwave_radiation_sum (espresso in $MJ/m^2$).Logica di Alert: Se l'irraggiamento solare è elevato (> 20 $MJ/m^2$) ma l'efficienza rilevata è inferiore al 40%, il sistema evidenzia un errore di manutenzione sulla dashboard.
+Chiave: shortwave_radiation_sum (espresso in $MJ/m^2$).Logica di Alert: Se l'irraggiamento solare Ã¨ elevato (> 20 $MJ/m^2$) ma l'efficienza rilevata Ã¨ inferiore al 40%, il sistema evidenzia un errore di manutenzione sulla dashboard.
 
-5. Implementazione Tecnica (Stack)Next.js 14: Scelto per il routing ottimizzato e la velocit� di sviluppo.
+5. Implementazione Tecnica (Stack)Next.js 14: Scelto per il routing ottimizzato e la velocità di sviluppo.
 TypeScript: Utilizzato per garantire la sicurezza del codice ed evitare errori di tipo durante lo scambio dati tra DB e UI.Tailwind CSS: Per una UI moderna, responsive e accessibile.
 MySQL2: Driver per Node.js che supporta le Promises, fondamentale per gestire le operazioni asincrone (async/await).
 
 6. Manuale Operativo Visualizzazione: All'accesso, la dashboard mostra le card di ogni impianto con i dati meteo aggiornati. Inserimento: L'utente utilizza il form superiore per registrare i dati di produzione. Il sistema valida i campi e invia una richiesta POST al database. Monitoraggio: Le card cambiano stato visivo in base all'efficienza calcolata.
 
-7. Conclusioni e Sviluppi Futuri: Il progetto dimostra la fattibilit� di un sistema di monitoraggio industriale integrato. Possibili sviluppi futuri includono:Implementazione di grafici storici tramite Chart.js. Sistema di autenticazione per diversi livelli di utenza (Admin/Operatore).Esportazione dei report mensili in formato PDF/Excel.
+7. Conclusioni e Sviluppi Futuri: Il progetto dimostra la fattibilità di un sistema di monitoraggio industriale integrato. Possibili sviluppi futuri includono:Implementazione di grafici storici tramite Chart.js. Sistema di autenticazione per diversi livelli di utenza (Admin/Operatore).Esportazione dei report mensili in formato PDF/Excel.
